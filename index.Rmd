@@ -1,0 +1,67 @@
+---
+title: "Fig 7 OligoMM facility analysis"
+date: "`r Sys.Date()`"
+author: "Philipp C. Münch"
+output:
+  html_document:
+    highlight: pygments
+    number_sections: yes
+    theme: sandstone
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+source("functions.R")
+source("utils.R")
+library(ggplot2)
+library(BayesianFirstAid)
+library(onewaytests)
+```
+
+## Fig. 7D 
+
+```{r}
+dat <- read.table("data/plot1.csv", sep = ";", header = T, stringsAsFactors = F)
+types <- dat$facility
+dat[, c(1:2)] <- NULL
+stability_table <-
+  getWithinBetweenStatistics(as.matrix(vegan::vegdist(dat, method = 'bray')), types)
+p <- plotComparisonScatter(stability_table, col)
+p
+
+doTest(stability_table)
+```
+
+## Fig. 7E
+
+```{r}
+dat <- read.table("data/plot2.csv", sep = ";", header = T, stringsAsFactors = F)
+types <- dat$facility
+dat[, c(1:2)] <- NULL
+stability_table <-
+  getWithinBetweenStatistics(as.matrix(vegan::vegdist(dat, method = 'bray')), types)
+p <- plotComparisonScatter(stability_table, col)
+p
+
+doTest(stability_table)
+```
+
+## Fig. 7F
+
+```{r}
+dat <- read.table("data/plot3.csv", sep = ";", header = T, stringsAsFactors = F)
+types <- dat$facility
+dat[, c(1:2)] <- NULL
+stability_table <-
+  getWithinBetweenStatistics(as.matrix(vegan::vegdist(dat, method = 'bray')), types)
+p <- plotComparisonScatter(stability_table, col)
+p
+
+doTest(stability_table)
+```
