@@ -3,7 +3,7 @@ sudo: required
 warnings_are_errors: false
 dist: trusty
 install:
-  - R -e "install.packages('devtools', 'onewaytests', 'ggplot2')"
+  - R -e "install.packages(c('devtools', 'onewaytests', 'ggplot2'))"
   - R -e "devtools::install_github('rasmusab/bayesian_first_aid')"
   - R -e "devtools::install_github('rstudio/rmarkdown')"
 os:
