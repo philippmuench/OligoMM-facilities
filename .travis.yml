@@ -2,11 +2,9 @@ language: r
 sudo: required
 warnings_are_errors: false
 dist: trusty
-r_packages:
-- rmarkdown
-- BayesianFirstAid
-- onewaytests
-- ggplot2
+install:
+  - R -e "install.packages('devtools', 'BayesianFirstAid', 'onewaytests', 'ggplot2')"
+  - R -e "devtools::install_github('rstudio/rmarkdown')"
 os:
 - linux
 after_success:
