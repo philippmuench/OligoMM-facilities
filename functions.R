@@ -67,11 +67,13 @@ doTest <- function(stability_table){
   print(paste("sd within", round(sd(within$values), digits = 2)))
   
   welch.test(values ~ type, data = test_table) # welch test maybe not appropriate, since the data are paired
-  shapiro.test(within$values - between$values) 
-  t.test(stability_table$mean_within, stability_table$mean_between, paired = T)
-  bayes.t.test(stability_table$mean_within, stability_table$mean_between,
-               paired = T)
-  
-  bayes.t.test(stability_table$mean_within, stability_table$mean_between,
-               paired = F)
+  shapiro.test(within$values - between$values)
+  print("t-test paired")
+  print(t.test(stability_table$mean_within, stability_table$mean_between, paired = T))
+  print("bayes, paired")
+  print(bayes.t.test(stability_table$mean_within, stability_table$mean_between,
+               paired = T))
+  print("bayes, unpaired")
+  print(bayes.t.test(stability_table$mean_within, stability_table$mean_between,
+               paired = F))
 }
