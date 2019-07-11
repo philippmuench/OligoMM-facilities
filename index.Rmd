@@ -22,6 +22,8 @@ source("utils.R")
 library(ggplot2)
 library(BayesianFirstAid)
 library(onewaytests)
+library(DT)
+library(dplyr)
 ```
 
 ## Fig. 7D 
@@ -34,7 +36,8 @@ stability_table <-
   getWithinBetweenStatistics(as.matrix(vegan::vegdist(dat, method = 'bray')), types)
 p <- plotComparisonScatter(stability_table, col)
 p
-
+DT::datatable(stability_table) %>% formatRound(c('mean_within', 'sd_within',
+                                             'mean_between', 'sd_between'), 3) 
 doTest(stability_table)
 ```
 
@@ -48,8 +51,9 @@ stability_table <-
   getWithinBetweenStatistics(as.matrix(vegan::vegdist(dat, method = 'bray')), types)
 p <- plotComparisonScatter(stability_table, col)
 p
-
-doTest(stability_table)
+DT::datatable(stability_table) %>% formatRound(c('mean_within', 'sd_within',
+                                             'mean_between', 'sd_between'), 3) 
+doTest(stability_table) 
 ```
 
 ## Fig. 7F
@@ -62,6 +66,7 @@ stability_table <-
   getWithinBetweenStatistics(as.matrix(vegan::vegdist(dat, method = 'bray')), types)
 p <- plotComparisonScatter(stability_table, col)
 p
-
+datatable(stability_table) %>% formatRound(c('mean_within', 'sd_within',
+                                             'mean_between', 'sd_between'), 3) 
 doTest(stability_table)
 ```
