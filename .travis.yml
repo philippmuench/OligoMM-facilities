@@ -13,10 +13,7 @@ install:
   - R -e "install.packages(c('devtools', 'onewaytests', 'ggplot2'))"
   - R -e "devtools::install_github('rasmusab/bayesian_first_aid')"
   - R -e "devtools::install_github('rstudio/rmarkdown')"
-os:
-- linux
-after_success:
-- if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_EVENT_TYPE"
+  - if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_EVENT_TYPE"
   != "cron" ]] ; then R --no-save <<< "rmarkdown::render('index.Rmd')"; git checkout
   master; export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)"; git
   config --global user.name "Travis CI"; git config --global user.email "$COMMIT_AUTHOR_EMAIL";
