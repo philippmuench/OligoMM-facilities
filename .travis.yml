@@ -9,7 +9,7 @@ addons:
     - jags
     - libxml2-dev
 install:
-  - R -e "install.packages(c('devtools', 'dplyr', 'onewaytests', 'ggplot2', 'DT'))"
+  - R -e "install.packages(c('devtools', 'dplyr', 'vegan', 'onewaytests', 'ggplot2', 'DT'))"
   - R -e "devtools::install_github('rasmusab/bayesian_first_aid')"
   - R -e "devtools::install_github('rstudio/rmarkdown')"
   - R -e "rmarkdown::render('index.Rmd')"
