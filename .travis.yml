@@ -3,8 +3,6 @@ sudo: required
 warnings_are_errors: false
 dist: trusty
 cache: packages
-r_github_packages:
-  - rstudio/rmarkdown
 addons:
   apt:
     packages:
