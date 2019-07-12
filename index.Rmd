@@ -24,6 +24,8 @@ library(BayesianFirstAid)
 library(onewaytests)
 library(DT)
 library(dplyr)
+library(ComplexHeatmap)
+library(dendextend)
 ```
 
 ## Fig. 7D 
@@ -70,3 +72,141 @@ datatable(stability_table) %>% formatRound(c('mean_within', 'sd_within',
                                              'mean_between', 'sd_between'), 3) 
 doTest(stability_table)
 ```
+
+# heatmap
+
+```{r}
+dat <- read.table("data/plot1.csv", sep = ";", header = T, stringsAsFactors = F)
+types <- dat$facility
+dat[, c(1:2)] <- NULL
+mat <- as.matrix(vegan::vegdist(dat, method = 'bray'))
+row_dend <- ComplexHeatmap::cluster_within_group(mat, types)
+#annot_df <- annot_df[order.dendrogram(row_dend),]
+annot_df <- data.frame(facility = types)
+ha <- HeatmapAnnotation(df = annot_df, show_legend = TRUE, col = heatmap.col) 
+row_dend <- dendextend::color_branches(row_dend, k = length(unique(types)))
+h <- ComplexHeatmap::Heatmap(mat,
+             show_row_names = F,
+             width = unit(8, "cm"),
+             heatmap_legend_param = list(title = "Bray Curtis"),
+             top_annotation = ha,
+             show_column_names = F,
+             cluster_columns = row_dend,
+             cluster_rows = row_dend)
+h
+```
+
+```{r}
+dat <- read.table("data/plot2.csv", sep = ";", header = T, stringsAsFactors = F)
+types <- dat$facility
+dat[, c(1:2)] <- NULL
+mat <- as.matrix(vegan::vegdist(dat, method = 'bray'))
+row_dend <- ComplexHeatmap::cluster_within_group(mat, types)
+annot_df <- data.frame(facility = types)
+ha <- HeatmapAnnotation(df = annot_df, show_legend = TRUE, col = heatmap.col) 
+row_dend <- dendextend::color_branches(row_dend, k = length(unique(types)))
+h <- ComplexHeatmap::Heatmap(mat,
+             show_row_names = F,
+             width = unit(8, "cm"),
+             heatmap_legend_param = list(title = "Bray Curtis"),
+             top_annotation = ha,
+             show_column_names = F,
+             cluster_columns = row_dend,
+             cluster_rows = row_dend)
+h
+```
+
+
+final heatmap
+```{r}
+# process first experiment
+dat_a <- read.table("data/plot1.csv", sep = ";", header = T, stringsAsFactors = F)
+types_a <- dat_a$facility
+dat_a[, c(1:2)] <- NULL
+mat_a <- as.matrix(vegan::vegdist(dat_a, method = 'bray'))
+row_dend_a <- cluster_within_group(mat_a, types_a)
+
+# process second experiment
+dat_b <- read.table("data/plot2.csv", sep = ";", header = T, stringsAsFactors = F)
+types_b <- dat_b$facility
+dat_b[, c(1:2)] <- NULL
+mat_b <- as.matrix(vegan::vegdist(dat_b, method = 'bray'))
+row_dend_b <- cluster_within_group(mat_b, types_b)
+
+# merge both dendograms
+dend.m <- merge(row_dend_a, row_dend_b)
+
+# merge plotting matrix
+dat_both <- rbind(dat_a, dat_b)
+mat_both <- as.matrix(vegan::vegdist(dat_both, method = 'bray'))
+
+# top annotation
+annot_df <- data.frame(facility = c(types_a, types_b))
+
+# produces the legend
+ha1 <- HeatmapAnnotation(df = annot_df, show_legend = TRUE, col = heatmap.col) 
+
+# for final figure
+ha <-  HeatmapAnnotation(foo = anno_block(gp = gpar(fill = "grey50"),
+        labels = c(paste0("a",1:8)), 
+        height = unit(8, "mm"),
+        labels_gp = gpar(col = "white", fontface = "bold", fontsize = 8)))
+
+hr <- rowAnnotation(foo = anno_block(gp = gpar(fill = "grey50"),
+        labels = c(paste0("a",1:8)),
+        labels_gp = gpar(col = "white", fontface = "bold", fontsize = 8)))
+
+# squares
+cell_fun2 = function(j, i, x, y, width, height, fill) {
+	s = min(unit.c(convertWidth(width, "cm"), convertHeight(height, "cm")))
+	grid.rect(x = x, y = y, width = s * 1, height = s*1, 
+		gp = gpar(col = NA, fill = fill))
+}
+
+h <- ComplexHeatmap::Heatmap(mat_both,
+             show_row_names = F,
+             width = unit(8, "cm"),
+             show_column_dend = T,
+             row_gap = unit(0, "mm"),
+             column_gap = unit(0, "mm"),
+             show_row_dend = T,
+             heatmap_legend_param = list(title = "Bray Curtis"),
+             top_annotation = ha,
+             show_column_names = F,
+             cell_fun =  cell_fun2,
+             left_annotation = hr,
+             border = TRUE,
+             cluster_columns = dend.m,
+             cluster_rows = dend.m,
+             row_split = 8,
+             column_split = 8)
+
+
+pdf(file = "heat_final.pdf", width = 5, height = 4)
+print(h)
+dev.off()
+
+h 
+
+h <- ComplexHeatmap::Heatmap(mat_both,
+             show_row_names = F,
+             width = unit(8, "cm"),
+             show_column_dend = T,
+             row_gap = unit(0, "mm"),
+             column_gap = unit(0, "mm"),
+             show_row_dend = T,
+             heatmap_legend_param = list(title = "Bray Curtis"),
+             top_annotation = ha1,
+             show_column_names = F,
+             left_annotation = hr,
+             border = TRUE,
+             cluster_columns = dend.m,
+             cluster_rows = dend.m,
+             row_split = 8,
+             column_split = 8)
+pdf(file = "heat_final_legend.pdf", width = 5, height = 4)
+print(h)
+dev.off()
+
+```
+
